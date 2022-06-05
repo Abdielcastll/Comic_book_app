@@ -54,9 +54,11 @@ class _HomeViewState extends State<HomeView> {
             : const AppTitle('ComicBook'),
         actions: [
           IconButton(
-            icon: Icon(vm.search ? Icons.close : Icons.search),
-            onPressed: () => vm.search = !vm.search,
-          ),
+              icon: Icon(vm.search ? Icons.close : Icons.search),
+              onPressed: () {
+                vm.search = !vm.search;
+                vm.clearSearch();
+              }),
         ],
       ),
       body: _body(context, vm),
@@ -93,25 +95,29 @@ class _HomeViewState extends State<HomeView> {
         controller: listController,
         padding: const EdgeInsets.all(8),
         physics: const BouncingScrollPhysics(),
-        itemCount: vm.lastComics!.length + 1,
-        itemBuilder: (context, index) {
-          if (index >= vm.lastComics!.length) {
+        itemCount: vm.comicsSearch!.isNotEmpty
+            ? vm.comicsSearch!.length
+            : vm.lastComics!.length + 1,
+        itemBuilder: (context, i) {
+          if (i >= vm.lastComics!.length && vm.comicsSearch!.isEmpty) {
             return const Padding(
               padding: EdgeInsets.symmetric(vertical: 30),
               child: AppLoading(),
             );
           }
-          final comic = vm.lastComics?[index];
+          final comic = vm.comicsSearch!.isNotEmpty
+              ? vm.comicsSearch![i]
+              : vm.lastComics![i];
           return InkWell(
             onTap: () => Navigator.pushNamed(
                 context, DetailsComicView.routeName,
-                arguments: comic?.apiDetailUrl),
+                arguments: comic.apiDetailUrl),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Expanded(
                 child: AspectRatio(
                   aspectRatio: 2 / 3,
                   child: Image.network(
-                    comic?.image?.originalUrl ?? '',
+                    comic.image?.originalUrl ?? '',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -124,14 +130,14 @@ class _HomeViewState extends State<HomeView> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "${comic?.name ?? comic?.volume?.name} #${comic?.issueNumber ?? 'n/a'}",
+                        "${comic.name ?? comic.volume?.name} #${comic.issueNumber ?? 'n/a'}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         DateFormat.yMMMMd()
-                            .format(comic?.dateAdded ?? DateTime.now()),
+                            .format(comic.dateAdded ?? DateTime.now()),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                             color: Colors.grey,
@@ -160,14 +166,16 @@ class _HomeViewState extends State<HomeView> {
     return Expanded(
       child: GridView.builder(
         controller: gridController,
-        itemCount: vm.lastComics!.length +
-            (useMobileLayout
-                ? Orientation.portrait == orientation
-                    ? 2
-                    : 4
-                : Orientation.landscape == orientation
-                    ? 6
-                    : 4),
+        itemCount: vm.comicsSearch!.isNotEmpty
+            ? vm.comicsSearch!.length
+            : vm.lastComics!.length +
+                (useMobileLayout
+                    ? Orientation.portrait == orientation
+                        ? 2
+                        : 4
+                    : Orientation.landscape == orientation
+                        ? 6
+                        : 4),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: useMobileLayout
               ? Orientation.portrait == orientation
@@ -183,10 +191,12 @@ class _HomeViewState extends State<HomeView> {
         padding: const EdgeInsets.all(8),
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, i) {
-          if (i >= vm.lastComics!.length) {
+          if (i >= vm.lastComics!.length && vm.comicsSearch!.isEmpty) {
             return const AppLoading();
           }
-          final comic = vm.lastComics?[i];
+          final comic = vm.comicsSearch!.isNotEmpty
+              ? vm.comicsSearch![i]
+              : vm.lastComics?[i];
           return InkWell(
             onTap: () => Navigator.pushNamed(
                 context, DetailsComicView.routeName,

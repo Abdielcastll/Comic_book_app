@@ -46,8 +46,8 @@ class HttpServices {
   }
 
   static Future<List<LastComics>> searchComics(String query) async {
-    final url =
-        Uri.parse("$baseUrl?api_key=$apiKey&format=json&filter=name:$query");
+    final url = Uri.parse(
+        "${baseUrl}issues?api_key=$apiKey&format=json&filter=name:$query");
     try {
       var resp = await http.get(url);
       if (resp.statusCode == 200) {

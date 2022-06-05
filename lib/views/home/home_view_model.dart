@@ -10,6 +10,7 @@ class HomeViewModel with ChangeNotifier {
 
   bool _loading = false;
   List<LastComics>? lastComics = [];
+  List<LastComics>? comicsSearch = [];
   late bool error;
   bool _isList = false;
   bool _search = false;
@@ -50,13 +51,15 @@ class HomeViewModel with ChangeNotifier {
 
   Future<void> getMoreComics() async {
     offset += 28;
-    var resp = await HttpServices.getLastComics(offset);
-    if (resp is Success) {
-      var data = resp.response as LastComicsResponse;
-      lastComics!.addAll(data.results!);
-      notifyListeners();
-    } else if (resp is Failure) {
-      failure = resp;
+    if (!search) {
+      var resp = await HttpServices.getLastComics(offset);
+      if (resp is Success) {
+        var data = resp.response as LastComicsResponse;
+        lastComics!.addAll(data.results!);
+        notifyListeners();
+      } else if (resp is Failure) {
+        failure = resp;
+      }
     }
   }
 
@@ -67,9 +70,14 @@ class HomeViewModel with ChangeNotifier {
       loading = false;
       return false;
     } else {
-      lastComics = resultTemp;
+      comicsSearch = resultTemp;
       loading = false;
       return true;
     }
+  }
+
+  void clearSearch() {
+    comicsSearch = [];
+    notifyListeners();
   }
 }

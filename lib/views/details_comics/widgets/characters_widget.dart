@@ -37,12 +37,12 @@ class CharactersWidget extends StatelessWidget {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: useMobileLayout
                         ? Orientation.portrait == orientation
-                            ? 2
+                            ? 1
                             : 2
                         : Orientation.landscape == orientation
                             ? 2
                             : 1,
-                    childAspectRatio: useMobileLayout ? 21 / 7 : 21 / 5,
+                    childAspectRatio: 21 / 5,
                     crossAxisSpacing: 0,
                     mainAxisSpacing: 0,
                   ),

@@ -1,5 +1,6 @@
 import 'package:comic_book_app/views/details_comics/details_view_model.dart';
-import 'package:comic_book_app/views/details_comics/widgets/characters_widget.dart';
+import 'package:comic_book_app/views/details_comics/widgets/characters_mobile_widget.dart';
+import 'package:comic_book_app/views/details_comics/widgets/characters_tablet_widget.dart';
 import 'package:comic_book_app/widgets/error_app.dart';
 import 'package:comic_book_app/widgets/loading_app.dart';
 import 'package:comic_book_app/widgets/title_app.dart';
@@ -64,19 +65,19 @@ class _DetailsComicViewState extends State<DetailsComicView> {
           vm.detailsComic?.image?.originalUrl ?? '',
           height: MediaQuery.of(context).size.height * .40,
         ),
-        CharactersWidget(
+        CharactersMobileWidget(
           subtitle: 'Characters',
           credits: vm.detailsComic!.characterCredits ?? [],
         ),
-        CharactersWidget(
+        CharactersMobileWidget(
           subtitle: 'Teams',
           credits: vm.detailsComic!.teamCredits ?? [],
         ),
-        CharactersWidget(
+        CharactersMobileWidget(
           subtitle: 'Locations',
           credits: vm.detailsComic!.locationCredits ?? [],
         ),
-        CharactersWidget(
+        CharactersMobileWidget(
           subtitle: 'Concepts',
           credits: vm.detailsComic!.personCredits ?? [],
         ),
@@ -93,19 +94,19 @@ class _DetailsComicViewState extends State<DetailsComicView> {
             padding: const EdgeInsets.all(8),
             physics: const BouncingScrollPhysics(),
             children: [
-              CharactersWidget(
+              CharactersTabletWidget(
                 subtitle: 'Characters',
                 credits: vm.detailsComic!.characterCredits ?? [],
               ),
-              CharactersWidget(
+              CharactersTabletWidget(
                 subtitle: 'Teams',
                 credits: vm.detailsComic!.teamCredits ?? [],
               ),
-              CharactersWidget(
+              CharactersTabletWidget(
                 subtitle: 'Locations',
                 credits: vm.detailsComic!.locationCredits ?? [],
               ),
-              CharactersWidget(
+              CharactersTabletWidget(
                 subtitle: 'Concepts',
                 credits: vm.detailsComic!.personCredits ?? [],
               ),
@@ -113,9 +114,13 @@ class _DetailsComicViewState extends State<DetailsComicView> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(5, 20, 15, 15),
-          child: Image.network(
-            vm.detailsComic?.image?.originalUrl ?? '',
+          padding: const EdgeInsets.fromLTRB(5, 20, 20, 20),
+          child: Container(
+            alignment: Alignment.topCenter,
+            width: MediaQuery.of(context).size.width * .45,
+            child: Image.network(
+              vm.detailsComic?.image?.originalUrl ?? '',
+            ),
           ),
         ),
       ],

@@ -93,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
     return Expanded(
       child: ListView.separated(
         controller: listController,
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         physics: const BouncingScrollPhysics(),
         itemCount: vm.comicsSearch!.isNotEmpty
             ? vm.comicsSearch!.length

@@ -16,7 +16,7 @@ class AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       width: double.infinity,
       height: 30,
       decoration: BoxDecoration(

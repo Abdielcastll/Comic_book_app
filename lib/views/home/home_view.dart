@@ -9,9 +9,32 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   static const routeName = 'home';
   const HomeView({Key? key}) : super(key: key);
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final gridController = ScrollController();
+  final listController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    gridController.addListener(() {
+      if (gridController.position.maxScrollExtent == gridController.offset) {
+        context.read<HomeViewModel>().getMoreComics();
+      }
+    });
+    listController.addListener(() {
+      if (listController.position.maxScrollExtent == listController.offset) {
+        context.read<HomeViewModel>().getMoreComics();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +90,17 @@ class HomeView extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Expanded(
       child: ListView.separated(
+        controller: listController,
         padding: const EdgeInsets.all(8),
         physics: const BouncingScrollPhysics(),
-        itemCount: vm.lastComics?.length ?? 0,
+        itemCount: vm.lastComics!.length + 1,
         itemBuilder: (context, index) {
+          if (index >= vm.lastComics!.length) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 30),
+              child: AppLoading(),
+            );
+          }
           final comic = vm.lastComics?[index];
           return InkWell(
             onTap: () => Navigator.pushNamed(
@@ -129,7 +159,15 @@ class HomeView extends StatelessWidget {
     final orientation = MediaQuery.of(context).orientation;
     return Expanded(
       child: GridView.builder(
-        itemCount: vm.lastComics?.length,
+        controller: gridController,
+        itemCount: vm.lastComics!.length +
+            (useMobileLayout
+                ? Orientation.portrait == orientation
+                    ? 2
+                    : 4
+                : Orientation.landscape == orientation
+                    ? 6
+                    : 4),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: useMobileLayout
               ? Orientation.portrait == orientation
@@ -145,6 +183,9 @@ class HomeView extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, i) {
+          if (i >= vm.lastComics!.length) {
+            return const AppLoading();
+          }
           final comic = vm.lastComics?[i];
           return InkWell(
             onTap: () => Navigator.pushNamed(
@@ -188,5 +229,12 @@ class HomeView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    listController.dispose();
+    gridController.dispose();
+    super.dispose();
   }
 }

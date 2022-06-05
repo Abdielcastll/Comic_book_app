@@ -9,9 +9,9 @@ class HttpServices {
   static const apiKey = '9f155fc9fbd8ce89bb3e56367151743bca928dd6';
   static const baseUrl = 'https://comicvine.gamespot.com/api/';
 
-  static Future<Object> getLastComics() async {
+  static Future<Object> getLastComics(int offset) async {
     final url = Uri.parse(
-        '${baseUrl}issues/?api_key=$apiKey&format=json&sort=date_added');
+        '${baseUrl}issues/?api_key=$apiKey&format=json&limit=28&offset=$offset');
     try {
       var resp = await http.get(url);
       if (resp.statusCode == 200) {

@@ -18,7 +18,7 @@ class HttpServices {
         return Success(response: lastComicsFromJson(resp.body));
       }
       return Failure(errorResponse: 'Invalid Response');
-    } on HttpException {
+    } on SocketException {
       return Failure(errorResponse: 'No Internet');
     } on FormatException {
       return Failure(errorResponse: 'Invalid Format');
@@ -36,7 +36,7 @@ class HttpServices {
         return Success(response: detailsResponseFromJson(resp.body));
       }
       return Failure(errorResponse: 'Invalid Response');
-    } on HttpException {
+    } on SocketException {
       return Failure(errorResponse: 'No Internet');
     } on FormatException {
       return Failure(errorResponse: 'Invalid Format');
